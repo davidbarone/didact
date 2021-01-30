@@ -4,7 +4,7 @@ interface IDidactState {
     // Keep track of the work-in-progress root and only 
     // add it to DOM once we've finished performing all the work
     // so that the user never sees the UI in an incomplete state.  
-    wipRoot: Fiber;
+    wipRoot?: Fiber;
     currentRoot: Fiber;
     // An array that keeps track of nodes we want to remove from the dom 
     // based on reconciliation results
