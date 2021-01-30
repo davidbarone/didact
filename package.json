@@ -1,6 +1,6 @@
 {
   "name": "@dbarone/didact",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny React clone based on https://github.com/pomber/didact.",
   "main": "./dist/index.js",
   "scripts": {
