@@ -5,14 +5,13 @@ import { useState } from './useState';
 //import { useCallback } from './hooks/use-callback';
 //import { useRef } from './hooks/use-ref';
 
-const Didact = {
+export default {
   render,
   createElement,
   useState,
+  MyFunc: ((a:string)=>alert(a))
   //useEffect,
   //useMemo,
   //useCallback,
   //useRef
 }
-
-export default Didact;
