@@ -3,6 +3,9 @@
   "version": "1.0.1",
   "description": "Tiny React clone based on https://github.com/pomber/didact.",
   "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack --mode production",
