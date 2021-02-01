@@ -9,6 +9,10 @@ The original Didact source code has been slightly modified here as follows:
 1. Conversion to TypeScript and split into multiple files for improved readability.
 2. Inclusion of tests
 
+The code has been split into a number of TypeScript modules allowing for better understanding of the library. The build process compiles to regular .js files. These files are placed in the /dist folder.
+
+Note that the **compile** script should be used instead of the **build** script.
+
 This is also being used as a training project for the following:
 1. Test publishing packages to npm
 2. Creating a full reference application for npm packages, including:
@@ -22,5 +26,5 @@ This is also being used as a training project for the following:
 - https://medium.com/javascript-in-plain-english/how-to-develop-test-run-and-publish-an-npm-module-react-and-webpack-f436adb54bbb
 - https://docs.npmjs.com/updating-your-published-package-version-number
 - https://medium.com/cameron-nokes/the-30-second-guide-to-publishing-a-typescript-package-to-npm-89d93ff7bccd
-- 
+
 

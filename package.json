@@ -9,8 +9,8 @@
   ],
   "scripts": {
     "test": "jest",
-    "build": "webpack --mode production",
-    "compile": "tsc"
+    "compile": "tsc",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
