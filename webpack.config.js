@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  target: "web",
   entry: { main: path.resolve('./src/didact.ts') },
   devtool: 'inline-source-map',
   module: {
@@ -17,6 +18,10 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'index.js'
+    filename: 'index.js',
+    library: '@dbarone/didact',
+    libraryTarget: 'umd',
+    globalObject: 'this',
+    umdNamedDefine: true
   }
 };

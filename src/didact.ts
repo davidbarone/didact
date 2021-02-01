@@ -6,9 +6,9 @@ import { useState } from './useState';
 //import { useRef } from './hooks/use-ref';
 
 export default {
-  render,
-  createElement,
-  useState,
+  render: render,
+  createElement: createElement,
+  useState: useState,
   MyFunc: ((a:string)=>alert(a))
   //useEffect,
   //useMemo,
