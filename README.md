@@ -20,6 +20,19 @@ This is also being used as a training project for the following:
    2. use of Bundler (WebPack) in the build process
    3. Testing the package locally
 
+## Building
+
+This package supports 2 methods of building:
+- Using TypeScript compiler (tsc)
+- Bundling using WebPack + tsloader
+
+### TypeScript
+
+To compile using the TypeScript compiler, you'll need to run the **compile** npm script. This will compile all the .ts files and place native .js files and corresponding TypeScript type information (.d.ts files) into the /dist folder. The entry point is didact.js.
+
+To build using WebPack, you'll need to run the **build** npm script. This will use the **tsloader** module to compile the separate .ts files into a single bundled .js file. The entry point is also didact.js.
+
+
 ## Bibliography
 - https://docs.npmjs.com/cli/v6/commands/npm-link
 - https://dev.to/charperbonaroo/creating-a-ts-written-npm-package-for-use-in-node-js-or-browser-5gm3

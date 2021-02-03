@@ -9,7 +9,7 @@ export default {
   render: render,
   createElement: createElement,
   useState: useState,
-  MyFunc: ((a:string)=>alert(a))
+  MyFuncNew: ((a:string)=>alert(a))
   //useEffect,
   //useMemo,
   //useCallback,
