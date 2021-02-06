@@ -1,5 +1,6 @@
 import { render, createElement } from './core';
 import { useState } from './useState';
+import { useEffect } from './useEffect';
 //import { useEffect } from './useEffect';
 //import { useMemo } from './hooks/use-memo';
 //import { useCallback } from './hooks/use-callback';
@@ -9,8 +10,7 @@ export default {
   render: render,
   createElement: createElement,
   useState: useState,
-  MyFuncNew: ((a:string)=>alert(a))
-  //useEffect,
+  useEffect: useEffect,
   //useMemo,
   //useCallback,
   //useRef
