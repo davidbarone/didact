@@ -10,7 +10,7 @@ interface IDidactState {
     // based on reconciliation results
     deletions: Fiber[];
     wipFiber: Fiber;
-    nextUnitOfWork: Fiber;
+    nextUnitOfWork?: Fiber;
     hookIndex: number;
 }
   

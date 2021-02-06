@@ -177,7 +177,7 @@ function workLoop(deadline: RequestIdleCallbackDeadline) {
 
 window.requestIdleCallback(workLoop)
 
-function performUnitOfWork(fiber: Fiber): Fiber {
+function performUnitOfWork(fiber: Fiber): Fiber | undefined {
   const isFunctionComponent =
     fiber.type instanceof Function
   if (isFunctionComponent) {
@@ -195,7 +195,7 @@ function performUnitOfWork(fiber: Fiber): Fiber {
     }
     nextFiber = nextFiber.parent as Fiber
   }
-  throw Error("Should not get here?")
+  return undefined
 }
 
 function updateFunctionComponent(fiber: Fiber) {
@@ -220,8 +220,7 @@ function reconcileChildren(wipFiber: Fiber, elements: any) {
   let prevSibling: Fiber | undefined = undefined
 
   while (
-    index < elements.length &&
-    oldFiber != undefined
+    index < elements.length || oldFiber != undefined
   ) {
     const element = elements[index]
     let newFiber: Fiber | undefined = undefined
@@ -233,9 +232,9 @@ function reconcileChildren(wipFiber: Fiber, elements: any) {
 
     if (sameType) {
       newFiber = {
-        type: oldFiber.type,
+        type: oldFiber ? oldFiber.type : undefined,
         props: element.props,
-        dom: oldFiber.dom,
+        dom: oldFiber ? oldFiber.dom : undefined,
         parent: wipFiber,
         alternate: oldFiber,
         effectTag: FiberEffectTag.Update
