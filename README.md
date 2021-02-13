@@ -1,4 +1,25 @@
-# didact
+# @dbarone/didact
+
+- [@dbarone/didact](#dbaronedidact)
+  - [Introduction](#introduction)
+  - [Comparison to React](#comparison-to-react)
+  - [Components](#components)
+  - [Rendering](#rendering)
+    - [Packages](#packages)
+    - [Webpack Configuration](#webpack-configuration)
+    - [Babel Configuration](#babel-configuration)
+  - [Hooks](#hooks)
+    - [useState](#usestate)
+    - [useMemo](#usememo)
+  - [Building](#building)
+    - [TypeScript Compiler (tsc)](#typescript-compiler-tsc)
+    - [WebPack + tsloader](#webpack--tsloader)
+  - [Linking](#linking)
+  - [Versioning](#versioning)
+  - [Publishing](#publishing)
+  - [Bibliography](#bibliography)
+
+## Introduction
 Tiny React clone based on the original Didact library which can be found at: https://github.com/pomber/didact. The original Didact step-by-step tutorial can also be found at https://pomb.us/build-your-own-react/. This is my copy of didact which has also been published to npm for use in my personal projects.
 
 *Note: if you're looking for the original Didact, please go to https://www.npmjs.com/package/didact*
@@ -119,7 +140,56 @@ Hooks are used to maintain state, and build in effects and lifecycle events. The
 ### useState
 
 ### useMemo
-The useMemo hook is used to memoize the results of an expensive computation. The computation will only be calculated when one of the dependencies change.
+The useMemo hook is used to memoize the results of an expensive computation. The computation will only be calculated when one of the dependencies change. An example of its usage is shown below:
+
+``` javascript
+import Didact from "@dbarone/didact"
+const { render, useState, createElement, useMemo } = Didact
+
+function UseMemoExample() {
+  const [value1, setValue1] = useState(0);
+  const [value2, setValue2] = useState(0);
+  const [value3, setValue3] = useState(0);
+
+  function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+  }
+  
+  // Really slow implementation of multiplication operation.
+  function slowMultiply(value1, value2){
+    console.log('In expensive function');
+    sleep(1000);
+    return value1 * value2;
+  }
+  // memoized function
+  const memoized = useMemo(
+    () => slowMultiply(value1, value2),
+     // Only re-run the expensive function when any of these dependencies change
+    [value1, value2]
+  );
+  
+  return (
+    <div>
+      <i>This example illustrates the use of useMemo. Click on the buttons to change the state of value1, value2, and value3. Only when value1 or value2 change, will an expensive computation occur.</i>
+      <div>Value #1: {value1}</div>
+      <div>Value #2: {value2}</div>
+      <div>Value #3: {value3}</div>
+      <div>Memoized (value1 * value2): {memoized}</div>
+      <button onClick={() => setValue1(c => c + 1)}>Increment #1</button>
+      <button onClick={() => setValue2(c => c + 1)}>Increment #2</button>
+      <button onClick={() => setValue3(c => c + 1)}>Increment #3</button>
+    </div>
+  )
+}
+
+const element = <UseMemoExample />;
+const container = document.getElementById("root");
+render(element, container);
+```
 
 ## Building
 
