@@ -14,6 +14,113 @@ This project has also been used to let me play around with publishing packages t
 1. General publishing of packages to npm
 2. Including TypeScript and WebPack in the build process
 
+## Comparison to React
+
+| Feature             | React | Didact |
+| ------------------- | ----- | ------ |
+| Function Components | Yes   | Yes    |
+| Class Components    | Yes   | No     |
+| React <> fragment   | Yes   | No     |
+
+## Components
+
+Like other React clones, Components represent the basic building block in Didact. Only functional components are supported. Functional components can have an optional `props` argument.
+
+``` javascript
+import Didact from "@dbarone/didact"
+const { render, useState } = Didact
+
+function Hello(props) {
+  return <div>Hello {props.location}!</div>;
+}
+
+const element = <Hello location="World" />
+const container = document.getElementById("root")
+render(element, container)
+```
+
+The `props` argument can be alternatively destructured:
+
+``` javascript
+import Didact from "@dbarone/didact"
+const { render, useState } = Didact
+
+function Hello({location}) {
+  return <div>Hello {location}!</div>;
+}
+
+const element = <Hello location="World" />
+const container = document.getElementById("root")
+render(element, container)
+```
+
+## Rendering
+Each function typically returns an HTML fragment used to render the component. Normally this will be JSX syntax. If using JSX, the function name must start with a capital letter, and there must be a single root fragment. The `<>..</>` syntax is not permitted. A valid element like `<div>...</div>` must be used. If using JSX, you will also need the following configuration:
+
+### Packages
+- @babel/core
+- @babel/preset-env
+- @babel/plugin-transform-react-jsx
+- @babel-loader
+
+### Webpack Configuration
+``` javascript
+    module: {
+        rules: [
+            {
+                test: /\.(js)$/,
+                exclude: /node_modules/,
+                use: ['babel-loader']
+            }
+        ]
+    },
+```
+
+### Babel Configuration
+``` javascript
+{
+    "presets": [
+      "@babel/preset-env"
+    ],
+  
+    "plugins": [
+        ["@babel/plugin-transform-react-jsx", {
+          "pragma": "Didact.createElement",
+          "throwIfNamespace": false
+        }]
+      ]
+}
+```
+
+JSX is not mandatory. The JSX syntax is simply converted to:
+
+`Didact.createElement(component, props, ...children)`
+
+so the above example can be rewritten without using JSX as follows:
+
+``` javascript
+import Didact from "@dbarone/didact"
+const { render, useState, createElement } = Didact
+
+function Hello({location}) {
+  return createElement("div", null, `Hello ${location}!`);
+}
+
+const element = createElement(Hello, { location: "World" }, null);
+const container = document.getElementById("root")
+render(element, container)
+```
+
+## Hooks
+Hooks are used to maintain state, and build in effects and lifecycle events. There are a number of hooks available:
+- useState
+- useEffect
+
+### useState
+
+### useMemo
+The useMemo hook is used to memoize the results of an expensive computation. The computation will only be calculated when one of the dependencies change.
+
 ## Building
 
 This package can actually be built 2 ways:
