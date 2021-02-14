@@ -43,7 +43,7 @@ This project has also been used to let me play around with publishing packages t
 | ------------------- | ----- | ------ |
 | Function Components | Yes   | Yes    |
 | Class Components    | Yes   | No     |
-| React <> fragment   | Yes   | No     |
+| Fragments           | Yes   | Yes    |
 
 ## Components
 
