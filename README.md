@@ -11,6 +11,7 @@
   - [Hooks](#hooks)
     - [useState](#usestate)
     - [useMemo](#usememo)
+    - [useCallback](#usecallback)
   - [Building](#building)
     - [TypeScript Compiler (tsc)](#typescript-compiler-tsc)
     - [WebPack + tsloader](#webpack--tsloader)
@@ -191,6 +192,51 @@ const container = document.getElementById("root");
 render(element, container);
 ```
 
+### useCallback
+the `useCallback` hook returns a memoized callback function. The callback function will only change if one of the dependencies change. This is useful when passing callbacks to child components that rely on reference equality to prevent unnecessary renders.
+
+`useCallback(fn, deps)` is equivalent to `useMemo(() => fn, deps)`.
+
+An example of its usage is shown below:
+
+``` javascript
+import Didact from "@dbarone/didact"
+import { useCallback } from "@dbarone/didact/dist/useCallback";
+const { render } = Didact
+
+// Could search a big list of items using a search term, e.g. an API call.
+function doSearch(term) {
+  return [
+    'apple',
+    'banana'
+  ];
+}
+
+function ClickableList({ term, onItemClick }) {
+  const items = doSearch(term);
+  const map = item => <div onClick={onItemClick}>{item}</div>;
+  return <div>{items.map(map)}</div>;
+}
+
+function UseCallbackExample({ term }) {
+  const onItemClick = useCallback(event => {
+    console.log('You clicked ', event.currentTarget);
+  }, [term]);
+
+  return (
+    <ClickableList
+      term={term}
+      onItemClick={onItemClick}
+    />
+  );
+}
+
+const element = <UseCallbackExample term="Fruits" />;
+const container = document.getElementById("root");
+render(element, container);
+```
+
+
 ## Building
 
 This package can actually be built 2 ways:
@@ -246,3 +292,7 @@ npm version patch
 - **How to develop, test, run and publish npm packages:** https://medium.com/javascript-in-plain-english/how-to-develop-test-run-and-publish-an-npm-module-react-and-webpack-f436adb54bbb
 - **Incrementing the package.json version number:** https://docs.npmjs.com/updating-your-published-package-version-number
 - **Publishing TypeScript packages to npm:** https://medium.com/cameron-nokes/the-30-second-guide-to-publishing-a-typescript-package-to-npm-89d93ff7bccd
+- **useMemo and useCallback**: https://kentcdodds.com/blog/usememo-and-usecallback
+- **useCallback example**: https://dmitripavlutin.com/dont-overuse-react-usecallback/
+- **React Hooks reference**: https://reactjs.org/docs/hooks-reference.html
+- **Preact Guide**: https://preactjs.com/guide/v10/getting-started

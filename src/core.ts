@@ -7,7 +7,30 @@ import { isEvent, isGone, isNew, isProperty } from "./Helper"
 import { RequestIdleCallbackDeadline } from "./Global"
 
 
-function createElement(type:string, props:any, ...children:any[]) {
+// Provides ability to put a <Fragment> root
+// node on JSX. Simply returns the children
+// objects.
+function Fragment(props: any) {
+	return props.children;
+}
+
+function toChildArray(children:any, out:any[]) {
+	out = out || [];
+	if (children == null || typeof children == 'boolean') {
+	} else if (Array.isArray(children)) {
+		children.some(child => {
+			toChildArray(child, out);
+		});
+	} else {
+		out.push(children);
+	}
+	return out;
+}
+
+function createElement(type: string, props: any, ...children: any[]) {
+  console.log(type);
+  console.log(`type is ${type}`)
+  children = toChildArray(children, []);
   return {
     type,
     props: {
@@ -272,5 +295,6 @@ function reconcileChildren(wipFiber: Fiber, elements: any) {
 
 export {
   createElement,
-  render
+  render,
+  Fragment
 }
