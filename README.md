@@ -8,6 +8,7 @@
     - [Packages](#packages)
     - [Webpack Configuration](#webpack-configuration)
     - [Babel Configuration](#babel-configuration)
+  - [Fragments](#fragments)
   - [Hooks](#hooks)
     - [useState](#usestate)
     - [useMemo](#usememo)
@@ -132,10 +133,46 @@ const element = createElement(Hello, { location: "World" }, null);
 const container = document.getElementById("root")
 render(element, container)
 ```
+## Fragments
+
+JSX requires a block to have a single root element. Occasionally, this can result in invalid HTML, for example within tables. In these cases, and where you don't want to add an unnecessary `div` node, you can use the `Fragment` node:
+
+``` javascript
+import Didact from "@dbarone/didact"
+const { render, Fragment } = Didact
+
+function MyTable({ rows }) {
+  return (
+    <table>
+      <tbody>
+        <MyRows />
+      </tbody>
+    </table>
+  )
+}
+
+function MyRows() {
+  let data = [
+    "apples", "bananas", "pears", "oranges"
+  ];
+
+  return (
+    <Fragment>
+      {data.map(d => <tr><td>{d}</td></tr>)}
+    </Fragment>
+  )
+}
+
+const element = <MyTable />;
+const container = document.getElementById("root");
+render(element, container);
+```
 
 ## Hooks
 Hooks are used to maintain state, and build in effects and lifecycle events. There are a number of hooks available:
 - useState
+- useMemo
+- useCallback
 - useEffect
 
 ### useState
