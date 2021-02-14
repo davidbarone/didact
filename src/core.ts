@@ -28,8 +28,6 @@ function toChildArray(children:any, out:any[]) {
 }
 
 function createElement(type: string, props: any, ...children: any[]) {
-  console.log(type);
-  console.log(`type is ${type}`)
   children = toChildArray(children, []);
   return {
     type,
