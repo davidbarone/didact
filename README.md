@@ -12,6 +12,7 @@
   - [Hooks](#hooks)
     - [useState](#usestate)
     - [useMemo](#usememo)
+    - [useMemo](#usememo-1)
     - [useCallback](#usecallback)
   - [Building](#building)
     - [TypeScript Compiler (tsc)](#typescript-compiler-tsc)
@@ -19,6 +20,9 @@
   - [Linking](#linking)
   - [Versioning](#versioning)
   - [Publishing](#publishing)
+  - [How the library works](#how-the-library-works)
+    - [DidactState](#didactstate)
+    - [Render() method](#render-method)
   - [Bibliography](#bibliography)
 
 ## Introduction
@@ -171,11 +175,38 @@ render(element, container);
 ## Hooks
 Hooks are used to maintain state, and build in effects and lifecycle events. There are a number of hooks available:
 - useState
+- useEffect
 - useMemo
 - useCallback
-- useEffect
+
 
 ### useState
+The useState hook is used to maintain internal state within a component. Along with `props` they are the 2 mechanisms that state can be maintained. The useState hook accepts a single parameter which is the initial state. The result of invoking the hook is an array with 2 elements. The first is a getter for the state, and the second is a setter for the state.
+
+``` javascript
+import Didact from "@dbarone/didact"
+const { render, useState } = Didact
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+  const increment = () => setCount(c => c + 1);
+  const decrement = () => setCount(c => c - 1);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={increment}>Increment</button>
+      <button onClick={decrement}>Decrement</button>
+    </div>
+  )
+}
+
+const element = <Counter />;
+const container = document.getElementById("root");
+render(element, container);
+```
+
+### useMemo
 
 ### useMemo
 The useMemo hook is used to memoize the results of an expensive computation. The computation will only be calculated when one of the dependencies change. An example of its usage is shown below:
