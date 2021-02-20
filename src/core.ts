@@ -10,8 +10,8 @@ import { RequestIdleCallbackDeadline } from "./Global"
 // Provides ability to put a <Fragment> root
 // node on JSX. Simply returns the children
 // objects.
-function Fragment(props: any) {
-	return props.children;
+function fragment(props: any) {
+  return props.children;
 }
 
 function toChildArray(children:any, out:any[]) {
@@ -28,6 +28,14 @@ function toChildArray(children:any, out:any[]) {
 }
 
 function createElement(type: string, props: any, ...children: any[]) {
+  
+  // pragmaFrag can be set to a text value.
+  // In which case, is passed in as type parameter
+  // and can be checked for here:
+  //if (type == "fragment") {
+    //type="div"
+  //}
+  
   children = toChildArray(children, []);
   return {
     type,
@@ -180,6 +188,13 @@ function render(element: any, container: DomNode) {
   }
   DidactState.deletions = []
   DidactState.nextUnitOfWork = DidactState.wipRoot
+  
+  ///////////////////////////////////
+  // Enable following to run manually
+  //workLoop({
+    //didTimeout: false,
+    //timeRemaining: (() => 10)
+  //})
 }
 
 function workLoop(deadline: RequestIdleCallbackDeadline) {
@@ -223,7 +238,19 @@ function updateFunctionComponent(fiber: Fiber) {
   DidactState.wipFiber = fiber
   DidactState.hookIndex = 0
   DidactState.wipFiber.hooks = []
-  const children = [(fiber.type as Function)(fiber.props)]
+
+  // Function components generally return single root node object
+  // The one exception is the Fragment function which returns
+  // an array. We deal with both kinds here
+  let results = (fiber.type as Function)(fiber.props)
+  let children: any[] = []
+  if (Array.isArray(results)) {
+    // Fragment results returns array
+    children = [...results]
+  } else {
+    // Normal function component returns single root node
+    children = [results]
+  }
   reconcileChildren(fiber, children)
 }
 
@@ -294,5 +321,5 @@ function reconcileChildren(wipFiber: Fiber, elements: any) {
 export {
   createElement,
   render,
-  Fragment
+  fragment
 }

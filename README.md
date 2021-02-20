@@ -320,6 +320,27 @@ Note that the version number will need to be incremented first, and the Git work
 npm version patch
 ```
 
+## How the library works
+
+### DidactState
+
+The DidactState object persists all the state of the reconciliation and rendering work. The object has the following properties:
+- wipRoot: ?: Fiber;
+    currentRoot: Fiber;
+    // An array that keeps track of nodes we want to remove from the dom 
+    // based on reconciliation results
+    deletions: Fiber[];
+    wipFiber: Fiber;
+    nextUnitOfWork?: Fiber;
+    hookIndex: number;
+
+### Render() method
+The `render()` method is where all the magic happens.
+
+Initialisation of the DidactState
+
+
+
 ## Bibliography
 - **Self-contained Didact tutorial:** https://pomb.us/build-your-own-react/
 - **Original Didact source:** https://github.com/pomber/didact

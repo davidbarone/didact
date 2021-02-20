@@ -1,4 +1,4 @@
-import { render, createElement, Fragment } from './core';
+import { render, createElement, fragment } from './core';
 import { useState } from './useState';
 import { useEffect } from './useEffect';
 //import { useEffect } from './useEffect';
@@ -9,7 +9,7 @@ import { useCallback } from './useCallback';
 export default {
   render: render,
   createElement: createElement,
-  Fragment: Fragment,
+  fragment: fragment,
   useState: useState,
   useEffect: useEffect,
   useMemo: useMemo,
