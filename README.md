@@ -11,8 +11,8 @@
   - [Fragments](#fragments)
   - [Hooks](#hooks)
     - [useState](#usestate)
+    - [useEffect](#useeffect)
     - [useMemo](#usememo)
-    - [useMemo](#usememo-1)
     - [useCallback](#usecallback)
   - [Building](#building)
     - [TypeScript Compiler (tsc)](#typescript-compiler-tsc)
@@ -206,7 +206,25 @@ const container = document.getElementById("root");
 render(element, container);
 ```
 
-### useMemo
+### useEffect
+The useEffect hook is the main way to trigger side-effects. useEffect is often used to get data from an API. 
+
+``` javascript
+import Didact from "@dbarone/didact"
+const { render, useEffect } = Didact
+
+const Counter = () => {
+  useEffect(() => { alert("in useEffect!") });
+
+  return (
+    <div>Hello World!</div>
+  )
+}
+
+const element = <Counter />;
+const container = document.getElementById("root");
+render(element, container);
+```
 
 ### useMemo
 The useMemo hook is used to memoize the results of an expensive computation. The computation will only be calculated when one of the dependencies change. An example of its usage is shown below:
