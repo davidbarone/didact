@@ -322,7 +322,6 @@ const container = document.getElementById("root");
 render(element, container);
 ```
 
-
 ## Building
 
 This package can actually be built 2 ways:
@@ -370,6 +369,62 @@ npm version patch
 ```
 
 ## How the library works
+
+```
+Render(element, container)
+
+- State initialised
+.wipRoot set to new Fiber
+.wipRoot.dom = container
+.wipRoot.props.children = element
+.wipRoot.alternate = currentRoot (undefined)
+.nextUnitOfWork = .wipRoot
+Calls WorkLoop
+
+
+WorkLoop
+--------
+Does single unit of work
+In loop
+- Calls performUnitOfWork, which returns the next unit
+- When no more units of work returned by perUnitOfWork, calls commitRoot()
+
+PerformUnitOfWork
+-----------------
+Renders either:
+- Normal component: updateHostComponent(fiber)
+- Function component: updateFunctionComponent(fiber)
+, passing in current fiber
+
+UpdateHostComponent
+-------------------
+1. Creates dom node for fiber (if no dom property)
+2. Performs reconcileChildren between the fiber's dom node, and its children properties
+
+reconcileChildren
+-----------------
+Compares the dom to the virtual dom and creates/updates/deletes new dom nodes as necessary.
+
+CommitRoot()
+------------
+- Perform deletions
+- If any child record in state, commit that, calling CommitWork()
+
+CommitWork()
+------------
+
+
+Sample, running component called <MyComponent />, which returns jsx:
+
+<>
+  xyz
+</>
+                        DOM         props.children
+1st Unit of work:       #root       [MyRows()]
+2nd unit of work:      fn MyRows()
+3rd unit of work:      fn Fragment() [TEXT_ELEMENT: xyz]
+
+```
 
 ### DidactState
 
