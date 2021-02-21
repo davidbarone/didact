@@ -21,8 +21,10 @@
   - [Versioning](#versioning)
   - [Publishing](#publishing)
   - [How the library works](#how-the-library-works)
+    - [JSX and createElement()](#jsx-and-createelement)
+    - [render()](#render)
+    - [Walkthrough of render process](#walkthrough-of-render-process)
     - [DidactState](#didactstate)
-    - [Render() method](#render-method)
   - [Bibliography](#bibliography)
 
 ## Introduction
@@ -370,80 +372,94 @@ npm version patch
 
 ## How the library works
 
+### JSX and createElement()
+The first thing to understand is how JSX is automagically processed. Preprocessors like Babel take JSX and convert into a series of calls to `createElement`. The default handler is `React.createElement`, but this can be modified in the Babel configuration file:
+
+``` javascript
+"plugins": [
+        ["@babel/plugin-transform-react-jsx", {
+          "pragma": "Didact.createElement", // default pragma is React.createElement
+          "pragmaFrag": "Didact.fragment",
+          "throwIfNamespace": false // defaults to true
+        }]
+      ]
 ```
-Render(element, container)
 
-- State initialised
-.wipRoot set to new Fiber
-.wipRoot.dom = container
-.wipRoot.props.children = element
-.wipRoot.alternate = currentRoot (undefined)
-.nextUnitOfWork = .wipRoot
-Calls WorkLoop
+Any JSX found by the Babel preprocessor is converted to a series of calls to `Didact.createElement`, passing in 3 parameters:
+- The tag name as the element type (for example 'div')
+- The attributes of the node are passed in a `props` object
+- The children as passed as a `children` array
 
+### render()
 
-WorkLoop
---------
-Does single unit of work
-In loop
-- Calls performUnitOfWork, which returns the next unit
+React has another method `ReactDOM.render`. This is the method that actually renders the element within a parent dom node. A very simple implementation of a `render` method could theoretically take the JSX object and execute `document.createElement` and `parent.appendChild` JavaScript statements to add real elements to the DOM. However, this would only create a one-time static representation of the JSX, and would not allow reactive updates to the DOM as components are freely allowed to update JSX conditionally.
+
+To create a reactive implementation, React and other libraries utilise a virtual DOM and a a reconciliation process which compares the virtual DOM to the browser DOM, and add, update, and delete nodes as necessary. The rendering can require a large node hierarchy to be processed, and to avoid blocking issues, any tree-rendering is broken into small chunks known as `Fibers`. A Fiber tree is generated, and looped through. The rough series of steps is shown below:
+
+### Walkthrough of render process
+
+**Render(element, container)** called
+- State initialised using DidactState object:
+- wipRoot set to new Fiber
+- wipRoot.dom set to container
+- wipRoot.props.children set to element
+- wipRoot.alternate set to currentRoot (undefined)
+- nextUnitOfWork set to wipRoot
+- window.requestIdleCallback(workLoop) set up to call WorkLook in loop
+
+**WorkLoop** performed single unit of work, repeatedly. Each look iteration does:
+- Calls performUnitOfWork, which returns the next unit, and grooms the fiber tree.
 - When no more units of work returned by perUnitOfWork, calls commitRoot()
 
-PerformUnitOfWork
------------------
-Renders either:
-- Normal component: updateHostComponent(fiber)
-- Function component: updateFunctionComponent(fiber)
-, passing in current fiber
+**PerformUnitOfWork**
+- Updates either:
+  - Normal component: updateHostComponent(fiber)
+  - Function component: updateFunctionComponent(fiber)
 
-UpdateHostComponent
--------------------
-1. Creates dom node for fiber (if no dom property)
-2. Performs reconcileChildren between the fiber's dom node, and its children properties
+**UpdateHostComponent**
+- Creates dom node for fiber (if no dom property)
+- Performs reconcileChildren between the fiber's dom node, and its children properties
 
-reconcileChildren
------------------
-Compares the dom to the virtual dom and creates/updates/deletes new dom nodes as necessary.
+**updateFunctionComponent**
+- Calls the function to derive the children of the function
+- Performs reconcileChildren between the fiber's dom node, and its children properties
 
-CommitRoot()
-------------
-- Perform deletions
+**reconcileChildren**
+- Compares the document dom to the virtual dom and creates/updates/deletes new dom nodes as necessary.
+
+**CommitRoot**
+- Perform physical deletions from dom
 - If any child record in state, commit that, calling CommitWork()
 
-CommitWork()
-------------
+**CommitWork**
+- Physically appends doms to their parent doms
 
+Rendering a very simple test component called `Test` with the following JSX:
 
-Sample, running component called <MyComponent />, which returns jsx:
-
+``` javascript
 <>
   xyz
 </>
-                        DOM         props.children
-1st Unit of work:       #root       [MyRows()]
-2nd unit of work:      fn MyRows()
-3rd unit of work:      fn Fragment() [TEXT_ELEMENT: xyz]
-
 ```
+
+results in the following iterative calls in `workLoop`:
+
+| Iteration | wipRoot.dom | nextUnitOfWork   | wipRoot.props.children |
+| --------- | ----------- | ---------------- | ---------------------- |
+| 1         | #root       | #root            | [fn Test()]            |
+| 2         | #root       | fn Test()        | fn Fragment()          |
+| 3         | #root       | fn Fragment()    | nodeValue('xyz')       |
+| 4         | #root       | nodeValue('xyz') | []                     |
 
 ### DidactState
 
 The DidactState object persists all the state of the reconciliation and rendering work. The object has the following properties:
-- wipRoot: ?: Fiber;
-    currentRoot: Fiber;
-    // An array that keeps track of nodes we want to remove from the dom 
-    // based on reconciliation results
-    deletions: Fiber[];
-    wipFiber: Fiber;
-    nextUnitOfWork?: Fiber;
-    hookIndex: number;
-
-### Render() method
-The `render()` method is where all the magic happens.
-
-Initialisation of the DidactState
-
-
+- wipRoot: Fiber object that represents the root of the tree
+- currentRoot: Fiber representing the current root during reconciliation?
+- deletions: An array of Fiber objects that keep track of nodes we want to remove from the dom based on the reconciliation process
+- wipFiber: Fiber object representing the current Fiber object being processed
+- nextUnitOfWork: Fiber object representing the next Fiber object to process
+- hookIndex: number
 
 ## Bibliography
 - **Self-contained Didact tutorial:** https://pomb.us/build-your-own-react/
