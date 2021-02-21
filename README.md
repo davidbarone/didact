@@ -14,12 +14,12 @@
     - [useEffect](#useeffect)
     - [useMemo](#usememo)
     - [useCallback](#usecallback)
-  - [Building](#building)
+  - [Building, Linking, Publishing](#building-linking-publishing)
     - [TypeScript Compiler (tsc)](#typescript-compiler-tsc)
     - [WebPack + tsloader](#webpack--tsloader)
-  - [Linking](#linking)
-  - [Versioning](#versioning)
-  - [Publishing](#publishing)
+    - [Linking](#linking)
+    - [Versioning](#versioning)
+    - [Publishing](#publishing)
   - [How the library works](#how-the-library-works)
     - [JSX and createElement()](#jsx-and-createelement)
     - [render()](#render)
@@ -141,7 +141,7 @@ render(element, container)
 ```
 ## Fragments
 
-JSX requires a block to have a single root element. Occasionally, this can result in invalid HTML, for example within tables. In these cases, and where you don't want to add an unnecessary `div` node, you can use the `Fragment` node:
+JSX requires a block to have a single root element. Occasionally, this can result in invalid HTML, for example within tables. In these cases, and where you don't want to add an unnecessary `div` node, you can use the `Fragment` node (shortcut is `<> ... </>`):
 
 ``` javascript
 import Didact from "@dbarone/didact"
@@ -163,9 +163,9 @@ function MyRows() {
   ];
 
   return (
-    <Fragment>
+    <>
       {data.map(d => <tr><td>{d}</td></tr>)}
-    </Fragment>
+    </>
   )
 }
 
@@ -324,7 +324,7 @@ const container = document.getElementById("root");
 render(element, container);
 ```
 
-## Building
+## Building, Linking, Publishing
 
 This package can actually be built 2 ways:
 - Using TypeScript compiler (tsc)
@@ -338,7 +338,7 @@ To compile using the TypeScript compiler, you'll need to run the **compile** npm
 
 To build using WebPack, you'll need to run the **build** npm script. This will use the **tsloader** module to compile the separate .ts files into a single bundled .js file. The entry point is also didact.js.
 
-## Linking
+### Linking
 
 This project can be included in a client package using npm install @dbarone/didact. However, if the source code is downloaded to your local PC, you can actually create a virtual symlink as follows:
 - Open up this project locally, and in the package folder, run `npm link`
@@ -346,11 +346,11 @@ This project can be included in a client package using npm install @dbarone/dida
 
 The benefit of this approach, is that any changes to the @dbarone/didact project will be instantly available from the client ui project.
 
-## Versioning
+### Versioning
 
 When publishing an update of the package to npm, the version number must be incremented
 
-## Publishing
+### Publishing
 
 A test publish can be done using:
 
@@ -437,9 +437,13 @@ To create a reactive implementation, React and other libraries utilise a virtual
 Rendering a very simple test component called `Test` with the following JSX:
 
 ``` javascript
-<>
-  xyz
-</>
+const Test = () => {
+  return (
+    <>
+      xyz
+    </>
+  )
+}
 ```
 
 results in the following iterative calls in `workLoop`:
